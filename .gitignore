@@ -5,3 +5,5 @@ server.log
 env/
 server/*.db
 *.db
+!.keep
+tmp/
