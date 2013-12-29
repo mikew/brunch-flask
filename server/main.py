@@ -3,7 +3,7 @@
 import models
 import logging
 from flask import Flask, render_template
-from flask.ext.cache import Cache
+from flask_cache import Cache
 from flask_gzip import Gzip
 
 # For delayed jobs
