@@ -80,3 +80,4 @@ class test(BaseConfig):
     CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     SQLALCHEMY_ECHO = False
+    CACHE_NO_NULL_WARNING = True
