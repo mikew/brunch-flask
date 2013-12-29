@@ -1,21 +1,12 @@
 #!/usr/bin/env python
 
-from flask.ext.script import Command, Manager
+from flask_script import Manager
 
 from server import app_factory, cache, db, models
 manager = Manager(app_factory)
 
-
-@manager.command
-def db_create():
-    """Creates database using SQLAlchemy"""
-    db.create_all()
-
-
-@manager.command
-def db_drop():
-    """Drops database using SQLAlchemy"""
-    db.drop_all()
+from server.managers.db import manager as db_manager
+manager.add_command('db', db_manager)
 
 
 @manager.shell
