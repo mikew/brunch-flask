@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-import models
+from . import models
 import logging
 from flask import Flask, render_template
 from flask_cache import Cache
@@ -12,48 +12,26 @@ from flask_gzip import Gzip
 
 app = None
 cache = Cache(with_jinja2_ext=False)
-
-
-def __import_blueprint(blueprint_str):
-    blueprint_str = 'server.%s' % blueprint_str
-    module_path, variable_name = blueprint_str.rsplit('.', 1)
-    mod = __import__(module_path, fromlist=[variable_name])
-    return getattr(mod, variable_name)
-
-
-def config_str_to_obj(cfg):
-    import config
-
-    if cfg is None:
-        if hasattr(config, config.APP_ENV):
-            return getattr(config, config.APP_ENV)
-        else:
-            return getattr(config, config.DEFAULT_ENV)
-
-    return cfg
+db = models.db
 
 
 def app_factory(config=None, app_name=None, blueprints=None):
-    from .util import SerializedJSON
     global app
 
     app_name = app_name or __name__
     app = Flask(app_name)
-    app.json_encoder = SerializedJSON
 
     config = config_str_to_obj(config)
     configure_app(app, config)
-    configure_logger(app, config)
-    configure_blueprints(app, blueprints or config.BLUEPRINTS)
-    configure_error_handlers(app)
     configure_database(app)
+    configure_extensions(app)
+    configure_logger(app, config)
+    configure_error_handlers(app)
     configure_context_processors(app)
     configure_template_filters(app)
-    configure_extensions(app)
     configure_before_request(app)
-    configure_cache(app)
-    configure_others(app)
     configure_views(app)
+    configure_blueprints(app, blueprints or config.BLUEPRINTS)
 
     return app
 
@@ -64,13 +42,22 @@ def configure_app(app, config):
     app.config.from_envvar('APP_CONFIG', silent=True)  # available in the server
 
 
-def configure_cache(app):
-    cache.init_app(app)
+def configure_database(app):
+    """Database configuration should be set here"""
+    db.init_app(app)
 
 
-def configure_others(app):
+def configure_extensions(app):
+    """Configure extensions like mail and login here"""
+    from .util import SerializedJSON
+    app.json_encoder = SerializedJSON
     Gzip(app)
+    cache.init_app(app)
     #rq.init_app(app)
+
+
+def configure_views(app):
+    from . import views  # noqa
 
 
 def configure_logger(app, config):
@@ -82,7 +69,6 @@ def configure_logger(app, config):
     log_file.setFormatter(formatter)
     log_file.setLevel(config.LOG_LEVEL)
     app.logger.addHandler(log_file)
-    app.logger.info('Logger started')
 
 
 def configure_blueprints(app, blueprints):
@@ -148,11 +134,6 @@ def configure_error_handlers(app):
         return render_template('server_error.html'), 500
 
 
-def configure_database(app):
-    """Database configuration should be set here"""
-    models.db.init_app(app)
-
-
 def configure_context_processors(app):
     """Modify templates context here"""
     pass
@@ -163,14 +144,24 @@ def configure_template_filters(app):
     pass
 
 
-def configure_extensions(app):
-    """Configure extensions like mail and login here"""
-    pass
-
-
 def configure_before_request(app):
     pass
 
 
-def configure_views(app):
-    import views  # noqa
+def config_str_to_obj(cfg):
+    from . import config
+
+    if cfg is None:
+        if hasattr(config, config.APP_ENV):
+            return getattr(config, config.APP_ENV)
+        else:
+            return getattr(config, config.DEFAULT_ENV)
+
+    return cfg
+
+
+def __import_blueprint(blueprint_str):
+    blueprint_str = 'server.%s' % blueprint_str
+    module_path, variable_name = blueprint_str.rsplit('.', 1)
+    mod = __import__(module_path, fromlist=[variable_name])
+    return getattr(mod, variable_name)
