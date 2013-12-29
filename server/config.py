@@ -4,10 +4,10 @@ from os import environ as ENV
 import logging
 from datetime import timedelta
 
-default_db = 'sqlite:///development.db'
-redis_url = ENV.get('REDISTOGO_URL', 'redis://localhost:6379/10')
 DEFAULT_ENV = 'development'
 APP_ENV = ENV.get('APP_ENV', DEFAULT_ENV)
+default_db = 'sqlite:///../%s.db' % APP_ENV
+redis_url = ENV.get('REDISTOGO_URL', 'redis://localhost:6379/10')
 
 
 class BaseConfig(object):

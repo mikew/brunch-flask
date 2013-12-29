@@ -4,3 +4,4 @@
 server.log
 env/
 server/*.db
+*.db
