@@ -1,27 +1,45 @@
 # -*- coding:utf-8 -*-
 
+import models
 import logging
 from flask import Flask, render_template
+from flask.ext.cache import Cache
+from flask_gzip import Gzip
+
+# For delayed jobs
+#from flask_rq import RQ as RQ
+#rq = RQ()
+
+app = None
+cache = Cache(with_jinja2_ext=False)
 
 
 def __import_blueprint(blueprint_str):
-    split = blueprint_str.split('.')
-    module_path = '.'.join(split[0: len(split) - 1])
-    variable_name = split[-1]
+    blueprint_str = 'server.%s' % blueprint_str
+    module_path, variable_name = blueprint_str.rsplit('.', 1)
     mod = __import__(module_path, fromlist=[variable_name])
     return getattr(mod, variable_name)
 
 
 def config_str_to_obj(cfg):
-    if isinstance(cfg, basestring):
-        module = __import__('config', fromlist=[cfg])
-        return getattr(module, cfg)
+    import config
+
+    if cfg is None:
+        if hasattr(config, config.APP_ENV):
+            return getattr(config, config.APP_ENV)
+        else:
+            return getattr(config, config.DEFAULT_ENV)
+
     return cfg
 
 
-def app_factory(config, app_name=None, blueprints=None):
+def app_factory(config=None, app_name=None, blueprints=None):
+    from .util import SerializedJSON
+    global app
+
     app_name = app_name or __name__
     app = Flask(app_name)
+    app.json_encoder = SerializedJSON
 
     config = config_str_to_obj(config)
     configure_app(app, config)
@@ -33,6 +51,8 @@ def app_factory(config, app_name=None, blueprints=None):
     configure_template_filters(app)
     configure_extensions(app)
     configure_before_request(app)
+    configure_cache(app)
+    configure_others(app)
     configure_views(app)
 
     return app
@@ -41,7 +61,16 @@ def app_factory(config, app_name=None, blueprints=None):
 def configure_app(app, config):
     """Loads configuration class into flask app"""
     app.config.from_object(config)
-    app.config.from_envvar("APP_CONFIG", silent=True)  # available in the server
+    app.config.from_envvar('APP_CONFIG', silent=True)  # available in the server
+
+
+def configure_cache(app):
+    cache.init_app(app)
+
+
+def configure_others(app):
+    Gzip(app)
+    #rq.init_app(app)
 
 
 def configure_logger(app, config):
@@ -53,7 +82,7 @@ def configure_logger(app, config):
     log_file.setFormatter(formatter)
     log_file.setLevel(config.LOG_LEVEL)
     app.logger.addHandler(log_file)
-    app.logger.info("Logger started")
+    app.logger.info('Logger started')
 
 
 def configure_blueprints(app, blueprints):
@@ -65,10 +94,13 @@ def configure_blueprints(app, blueprints):
             blueprint = blueprint_config
         elif isinstance(blueprint_config, tuple):
             blueprint = blueprint_config[0]
-            kw = blueprint_config[1]
+            if isinstance(blueprint_config[1], basestring):
+                kw = {'url_prefix': blueprint_config[1]}
+            else:
+                kw = blueprint_config[1]
         else:
-            print "Error in BLUEPRINTS setup in config.py"
-            print "Please, verify if each blueprint setup is either a string or a tuple."
+            print 'Error in BLUEPRINTS setup in config.py'
+            print 'Please, verify if each blueprint setup is either a string or a tuple.'
             exit(1)
 
         blueprint = __import_blueprint(blueprint)
@@ -87,7 +119,7 @@ def configure_error_handlers(app):
         information available to the client, the status code 404 (Not Found)
         can be used instead.
         """
-        return render_template("access_forbidden.html"), 403
+        return render_template('access_forbidden.html'), 403
 
     @app.errorhandler(404)
     def page_not_found(error):
@@ -100,7 +132,7 @@ def configure_error_handlers(app):
         server does not wish to reveal exactly why the request has been refused,
         or when no other response is applicable.
         """
-        return render_template("page_not_found.html"), 404
+        return render_template('page_not_found.html'), 404
 
     @app.errorhandler(405)
     def method_not_allowed_page(error):
@@ -109,21 +141,16 @@ def configure_error_handlers(app):
         identified by the Request-URI. The response MUST include an Allow header
         containing a list of valid methods for the requested resource.
         """
-        return render_template("method_not_allowed.html"), 405
+        return render_template('method_not_allowed.html'), 405
 
     @app.errorhandler(500)
     def server_error_page(error):
-        return render_template("server_error.html"), 500
+        return render_template('server_error.html'), 500
 
 
 def configure_database(app):
-    """
-    Database configuration should be set here
-    """
-    # uncomment for sqlalchemy support
-    # from database import db
-    # db.app = app
-    # db.init_app(app)
+    """Database configuration should be set here"""
+    models.db.init_app(app)
 
 
 def configure_context_processors(app):
@@ -146,5 +173,4 @@ def configure_before_request(app):
 
 
 def configure_views(app):
-    """Add some simple views here like index_view"""
-    pass
+    import views  # noqa

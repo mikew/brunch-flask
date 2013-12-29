@@ -1,0 +1,10 @@
+flask
+flask-sqlalchemy
+flask-script
+redis
+hiredis
+flask-cache
+flask-gzip
+
+# for delayed jobs
+#rq
