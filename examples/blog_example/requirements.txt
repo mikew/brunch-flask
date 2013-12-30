@@ -1,2 +1,0 @@
-Flask-Script
-Flask-SQLAlchemy
