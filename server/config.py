@@ -42,7 +42,7 @@ class BaseConfig(object):
 
     # LOGGING
     LOGGER_NAME = 'server_log'
-    LOG_FILENAME = 'server.log'
+    LOG_FILENAME = 'tmp/logs/%s.log' % APP_ENV
     LOG_LEVEL = logging.INFO
     LOG_FORMAT = '%(asctime)s %(levelname)s\t: %(message)s'  # used by logging.Formatter
 
