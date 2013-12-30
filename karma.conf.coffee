@@ -1,6 +1,6 @@
 module.exports = (config) -> config.set
   # base path, that will be used to resolve files and exclude
-  basePath: '.'
+  basePath: ''
 
   frameworks: ['mocha']
 
@@ -9,9 +9,9 @@ module.exports = (config) -> config.set
     'public/javascripts/vendor.js',
     'public/javascripts/app.js',
     'public/test/javascripts/test-vendor.js',
-    'test/assets/test/test-browser.js',
+    'public/test/test-browser.js',
     'public/test/javascripts/test.js'
-    'test/assets/test/test-loader.js',
+    'public/test/test-loader.js',
   ]
     
 
