@@ -1,9 +1,7 @@
-from server.main import app, cache
-from server.util import Duration, templated
+from server.main import app
+from server.util import Duration, route
 
 
-@app.route('/')
-@cache.cached(Duration.FOREVER)
-@templated('index.html')
+@route(app, '/', ttl=Duration.FOREVER, template='index.html')
 def index():
     return {}
