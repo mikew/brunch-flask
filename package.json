@@ -21,6 +21,7 @@
     "auto-reload-brunch": ">= 1.0 < 1.8",
     "mocha": "~1.16.2",
     "karma-mocha": "~0.1.1",
-    "karma": "~0.10.8"
+    "karma": "~0.10.8",
+    "karma-chai": "0.0.2"
   }
 }

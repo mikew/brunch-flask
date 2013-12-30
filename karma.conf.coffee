@@ -2,7 +2,7 @@ module.exports = (config) -> config.set
   # base path, that will be used to resolve files and exclude
   basePath: ''
 
-  frameworks: ['mocha']
+  frameworks: ['mocha', 'chai']
 
   # list of files / patterns to load in the browser
   files: [
@@ -10,10 +10,9 @@ module.exports = (config) -> config.set
     'public/javascripts/app.js',
     'public/test/javascripts/test-vendor.js',
     'public/test/test-browser.js',
-    'public/test/javascripts/test.js'
+    'public/test/javascripts/test.js',
     'public/test/test-loader.js',
   ]
-    
 
   # list of files to exclude
   exclude: []
@@ -45,7 +44,7 @@ module.exports = (config) -> config.set
   # - Opera
   # - Safari
   # - PhantomJS
-  browsers: ['PhantomJS']
+  browsers: ['Chrome']
 
   # Auto run tests on start (when browsers are captured) and exit
   #singleRun: true
