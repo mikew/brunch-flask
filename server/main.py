@@ -4,7 +4,7 @@ from . import models
 import logging
 from flask import Flask, render_template
 from flask_cache import Cache
-from flask_gzip import Gzip
+#from flask_gzip import Gzip
 
 # For delayed jobs
 #from flask_rq import RQ as RQ
@@ -51,7 +51,7 @@ def configure_extensions(app):
     """Configure extensions like mail and login here"""
     from .util import SerializedJSON
     app.json_encoder = SerializedJSON
-    Gzip(app)
+    #Gzip(app)
     cache.init_app(app)
     #rq.init_app(app)
 
