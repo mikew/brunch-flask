@@ -19,7 +19,7 @@ def app_factory(config=None, app_name=None, blueprints=None):
     global app
 
     app_name = app_name or __name__
-    app = Flask(app_name)
+    app = Flask(app_name, static_folder='../public/', static_url_path='/static')
 
     config = config_str_to_obj(config)
     configure_app(app, config)
