@@ -73,24 +73,50 @@ def configure_logger(app, config):
 
 def configure_blueprints(app, blueprints):
     """Registers all blueprints set up in config.py"""
+    autoload_blueprints(app)
+
     for blueprint_config in blueprints:
-        blueprint, kw = None, {}
+        blueprint, kwargs = None, {}
 
         if isinstance(blueprint_config, basestring):
             blueprint = blueprint_config
         elif isinstance(blueprint_config, tuple):
             blueprint = blueprint_config[0]
             if isinstance(blueprint_config[1], basestring):
-                kw = {'url_prefix': blueprint_config[1]}
+                kwargs = {'url_prefix': blueprint_config[1]}
             else:
-                kw = blueprint_config[1]
+                kwargs = blueprint_config[1]
         else:
             print 'Error in BLUEPRINTS setup in config.py'
             print 'Please, verify if each blueprint setup is either a string or a tuple.'
             exit(1)
 
         blueprint = __import_blueprint(blueprint)
-        app.register_blueprint(blueprint, **kw)
+        app.register_blueprint(blueprint, **kwargs)
+
+
+def autoload_blueprints(app):
+    import os
+    import importlib
+    import warnings
+
+    blueprint_path = os.path.join(app.root_path, 'blueprints')
+
+    for f in os.listdir(blueprint_path):
+        if not os.path.isdir(os.path.join(blueprint_path, f)):
+            continue
+
+        kwargs = {}
+        import_name = '.blueprints.%s' % f
+        blueprint = importlib.import_module(import_name, package='server')
+
+        if not hasattr(blueprint, 'app'):
+            msg = ('Blueprint "%s" has no app attribute. It will be skipped.'
+                   % f)
+            warnings.warn(msg, RuntimeWarning)
+            continue
+
+        app.register_blueprint(blueprint.app)
 
 
 def configure_error_handlers(app):
