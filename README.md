@@ -36,10 +36,16 @@ pip install -r server/requirements/development.txt
 foreman start -f Procfile.dev
 ```
 
+That's it. Visit `http://localhost:5000`, as you save files in `app/` that
+page will update.
+
 Testing
 -------
 
 ### Frontend
+
+I would suggest using one of Karma, Test'em or the browser, as those
+will update as files in `app/` are modified.
 
 **Using [Karma][karma]:**
 
@@ -53,19 +59,19 @@ node_modules/.bin/karma start
 node_modules/.bin/testem
 ```
 
+**Using the browser:**
+
+```bash
+foreman start -f Procfile.dev
+```
+
+Open `http://localhost:5000/static/test/index.html` in your browser.
+
 **Using [mocha-phantomjs][mocha-phantomjs]:**
 
 ```bash
 node_modules/.bin/mocha-phantomjs public/test/index.html
 ```
-
-**Using the browser:**
-
-```bash
-./manage.py runserver
-```
-
-Open `http://localhost:5000/test/` in your browser.
 
 ### Server
 

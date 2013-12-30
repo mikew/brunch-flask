@@ -3,6 +3,7 @@
 *~
 server.log
 env/
+venv/
 server/*.db
 *.db
 !.keep
