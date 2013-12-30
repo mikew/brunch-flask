@@ -12,7 +12,10 @@ Features
 ### Frontend
 
 [Brunch][brunch] compiles all your frontend assets for you. Just start
-adding things to the `app/` folder.
+adding things to the `app/` folder. By default this skeleton only comes
+with support for JS, Coffeescript, CSS and Sass, but Brunch has support
+for many, many, many more languages (Less, Stylus, Jade, ECO, EJS,
+React, etc).
 
 ### Server
 
