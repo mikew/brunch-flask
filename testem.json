@@ -1,0 +1,11 @@
+{
+  "framework": "mocha+chai",
+  "src_files": [
+    "public/javascripts/vendor.js",
+    "public/javascripts/app.js",
+    "public/test/javascripts/test-vendor.js",
+    "public/test/test-browser.js",
+    "public/test/javascripts/test.js",
+    "public/test/test-loader.js"
+  ]
+}
