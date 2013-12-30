@@ -17,5 +17,10 @@ def make_shell_context():
     return dict(app=app, db=db, models=models, cache=cache)
 
 
+@manager.command
+def clear_cache():
+    cache.clear()
+
+
 if __name__ == "__main__":
     manager.run()
