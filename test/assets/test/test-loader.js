@@ -1,1 +1,3 @@
-require.list().filter(function(_) {return /^test/.test(_);}).forEach(require);
+window.require.list()
+  .filter(function(name) {return /-test$.test(name)/;})
+  .forEach(require);
