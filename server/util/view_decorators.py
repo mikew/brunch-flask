@@ -2,20 +2,6 @@ from flask import Response, json, render_template, request
 from functools import wraps
 
 
-class Duration(object):
-    # Cache times
-    MINUTE = 60
-    HOUR = 60 * MINUTE
-    DAY = 24 * HOUR
-    WEEK = 7 * DAY
-    MONTH = 30 * DAY
-    YEAR = 365 * DAY
-
-    SHORT = 15 * MINUTE
-    LONG = HOUR
-    FOREVER = DAY
-
-
 class SerializedJSON(json.JSONEncoder):
     def default(self, obj):
         if hasattr(obj, 'serialized'):
