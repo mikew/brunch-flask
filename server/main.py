@@ -2,7 +2,7 @@
 
 from . import models
 import logging
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 from flask_cache import Cache
 #from flask_gzip import Gzip
 
@@ -141,7 +141,8 @@ def configure_context_processors(app):
 
 def configure_template_filters(app):
     """Configure filters and tags for jinja"""
-    pass
+    app.jinja_env.globals['static'] = (
+        lambda filename: url_for('static', filename=filename))
 
 
 def configure_before_request(app):
