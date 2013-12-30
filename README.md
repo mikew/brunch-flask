@@ -1,6 +1,24 @@
 Brunch + Flask
 ==============
 
+Getting Started
+---------------
+
+```bash
+gem install foreman
+npm install -g bower brunch
+brunch new https://github.com/mikew/brunch-flask myapp
+cd myapp
+virtualenv venv
+source venv/bin/activate
+pip install -r server/requirements/development.txt
+# or pip install -r server/requirements/test.txt
+foreman start -f Procfile.dev
+```
+
+That's it. Visit `http://localhost:5000`, as you save files in `app/` that
+page will update.
+
 Features
 --------
 
@@ -23,24 +41,6 @@ The server uses [Flask][flask] + [SQLAlchemy][sqlalchemy] + [Flask-cache][flask-
 Review `server/config.py` and `server/main.py` to see if there are any
 changes you need to make, then start adding things in
 `server/blueprints/`, `server/views/` or `server/models/`.
-
-Getting Started
----------------
-
-```bash
-gem install foreman
-npm install -g bower brunch
-brunch new https://github.com/mikew/brunch-flask myapp
-cd myapp
-virtualenv venv
-source venv/bin/activate
-pip install -r server/requirements/development.txt
-# or pip install -r server/requirements/test.txt
-foreman start -f Procfile.dev
-```
-
-That's it. Visit `http://localhost:5000`, as you save files in `app/` that
-page will update.
 
 Testing
 -------
