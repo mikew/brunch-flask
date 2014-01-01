@@ -36,7 +36,10 @@ def routes():
             options[arg] = "[{0}]".format(arg)
 
         methods = ','.join(rule.methods)
-        url = url_for(rule.endpoint, **options)
+        try:
+            url = url_for(rule.endpoint, **options)
+        except:
+            url = str(rule)
         line = urllib.unquote("{:50s} {:20s} {}"
                               .format(rule.endpoint, methods, url))
         output.append(line)
