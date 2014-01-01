@@ -6,7 +6,8 @@ def staging():
     env.hosts = ['user@staging']
     env.server_name = 'staging'
     env.code_dir = '/home/user/app_name'
-    env.activate_env = 'source %(code_dir)s/env/bin/activate' % env
+    env.venv_dir = '%(code_dir)s/venv'
+    env.activate_env = 'source %(venv_dir)s/bin/activate' % env
     env.env_wrapper = 'foreman run -- %s'
 
 
@@ -14,7 +15,8 @@ def live():
     env.hosts = ['user@live']
     env.server_name = 'live'
     env.code_dir = '/home/user/app_name'
-    env.activate_env = 'source %(code_dir)s/env/bin/activate' % env
+    env.venv_dir = '%(code_dir)s/venv'
+    env.activate_env = 'source %(venv_dir)s/bin/activate' % env
     env.env_wrapper = 'foreman run -- %s'
 
 
