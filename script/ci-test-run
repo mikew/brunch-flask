@@ -1,0 +1,14 @@
+#!/bin/sh
+
+npm install
+brunch build --production
+script/ci-test-frontend
+if [ -d "venv" ]; then
+  echo "**> virtualenv exists"
+else
+  echo "**> creating virtualenv"
+  virtualenv venv
+fi
+. venv/bin/activate
+pip install -r server/requirements/test.txt
+script/ci-test-server
