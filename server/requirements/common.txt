@@ -5,6 +5,7 @@ redis
 hiredis
 flask-cache
 flask-gzip
+fabric
 
 # for delayed jobs
 #rq
