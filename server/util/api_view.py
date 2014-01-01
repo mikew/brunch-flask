@@ -1,6 +1,6 @@
 from .view_decorators import jsonify
 from flask.views import MethodView
-from flask import request, Response, url_for as url_for
+from flask import current_app, g, request, Response, url_for
 
 
 class ApiView(MethodView):
@@ -17,6 +17,18 @@ class ApiView(MethodView):
             return resp
 
         return jsonify(resp)
+
+    @property
+    def request(self):
+        return request
+
+    @property
+    def g(self):
+        return g
+
+    @property
+    def logger(self):
+        return current_app.logger
 
     def get(self, pk):
         if pk is None:
