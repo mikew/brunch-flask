@@ -1,0 +1,7 @@
+-r server/requirements/production.txt
+# Please note these are production requirements.
+# This file mainly exists because Heroku.
+# If you are developing, you probably want
+# server/requirements/development.txt
+# or
+# server/requirements/test.txt
