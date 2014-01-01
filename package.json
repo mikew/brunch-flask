@@ -23,6 +23,7 @@
     "karma-mocha": "~0.1.1",
     "karma": "~0.10.8",
     "karma-chai": "0.0.2",
-    "testem": "~0.6.2"
+    "testem": "~0.6.2",
+    "karma-junit-reporter": "~0.2.1"
   }
 }
