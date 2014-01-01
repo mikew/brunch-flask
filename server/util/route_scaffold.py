@@ -31,6 +31,8 @@ def _integrity_check(json, template, template_or_json):
     _template = template
     _template_or_json = template_or_json
 
+    # template / template_or_json can be None when the template name is to be
+    # inferred
     if _template is None:
         _template = True
     if _template_or_json is None:
