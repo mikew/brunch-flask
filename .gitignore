@@ -40,3 +40,7 @@ public/
 
 # Bower stuff.
 bower_components/
+
+# Test results for CI
+test-results-frontend.xml
+test-results-server.xml

@@ -21,6 +21,10 @@ module.exports = (config) -> config.set
   # possible values: 'dots' || 'progress'
   reporters: ['progress']
 
+  # Where to save JUnit test results
+  junitReporter:
+    outputFile: 'test-results-frontend.xml'
+
   # web server port
   port: 9876
 

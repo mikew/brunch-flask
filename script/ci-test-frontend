@@ -1,0 +1,6 @@
+#!/bin/sh
+
+node_modules/.bin/karma start \
+  --reporters junit \
+  --single-run \
+  --browsers PhantomJS

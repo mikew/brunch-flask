@@ -1,0 +1,6 @@
+#!/bin/sh
+
+server/tests/runner.py \
+  --with-xunit \
+  --xunit-file test-results-server.xml \
+  server/tests/
