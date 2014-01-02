@@ -75,9 +75,7 @@ def templated(template=None):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            template_name = template
-            if template_name is None:
-                template_name = request.endpoint.replace('.', '/') + '.html'
+            template_name = get_template_name(template)
 
             result = f(*args, **kwargs)
             ctx, status, headers = normalize_response(result)
@@ -95,9 +93,7 @@ def template_or_json(template=None):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            template_name = template
-            if template_name is None:
-                template_name = request.endpoint.replace('.', '/') + '.html'
+            template_name = get_template_name(template)
 
             result = f(*args, **kwargs)
             ctx, status, headers = normalize_response(result)
@@ -127,6 +123,13 @@ def json_response(f):
         return jsonify(ctx), status, headers
 
     return decorated_function
+
+
+def get_template_name(template_name):
+    if template_name is None:
+        return request.endpoint.replace('.', '/') + '.html'
+
+    return template_name
 
 
 def normalize_response(response_or_tuple):
