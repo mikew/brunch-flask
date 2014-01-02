@@ -1,4 +1,4 @@
-from server.main import cache
+from server import cache
 from .view_decorators import (json_response,
                               template_or_json as template_or_json_,
                               templated)
