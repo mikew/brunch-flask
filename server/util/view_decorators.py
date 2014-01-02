@@ -79,13 +79,14 @@ def templated(template=None):
             if template_name is None:
                 template_name = request.endpoint.replace('.', '/') + '.html'
 
-            ctx = f(*args, **kwargs)
+            result = f(*args, **kwargs)
+            ctx, status, headers = normalize_response(result)
             if ctx is None:
                 ctx = {}
             elif not isinstance(ctx, dict):
-                return ctx
+                return ctx, status, headers
 
-            return render_template(template_name, **ctx)
+            return render_template(template_name, **ctx), status, headers
         return decorated_function
     return decorator
 
@@ -98,16 +99,17 @@ def template_or_json(template=None):
             if template_name is None:
                 template_name = request.endpoint.replace('.', '/') + '.html'
 
-            ctx = f(*args, **kwargs)
+            result = f(*args, **kwargs)
+            ctx, status, headers = normalize_response(result)
             if ctx is None:
                 ctx = {}
             elif not isinstance(ctx, dict):
-                return ctx
+                return ctx, status, headers
 
             if is_ajax(request):
-                return jsonify(ctx)
+                return jsonify(ctx), status, headers
 
-            return render_template(template_name, **ctx)
+            return render_template(template_name, **ctx), status, headers
         return decorated_function
     return decorator
 
@@ -120,7 +122,30 @@ def jsonify(obj):
 def json_response(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        ctx = f(*args, **kwargs)
-        return jsonify(ctx)
+        result = f(*args, **kwargs)
+        ctx, status, headers = normalize_response(result)
+        return jsonify(ctx), status, headers
 
     return decorated_function
+
+
+def normalize_response(response_or_tuple):
+    if not isinstance(response_or_tuple, tuple):
+        response_or_tuple = (response_or_tuple,)
+
+    try:
+        response = response_or_tuple[0]
+    except:
+        response = None
+
+    try:
+        status = response_or_tuple[1]
+    except IndexError:
+        status = 200
+
+    try:
+        headers = response_or_tuple[2]
+    except IndexError:
+        headers = {}
+
+    return (response, status, headers)
